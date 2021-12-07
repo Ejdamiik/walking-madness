@@ -1,65 +1,64 @@
-from typing import Any
-from PIL import Image, ImageDraw
-
-class BinaryTree:
-
-    def __init__(self, value: Any):
-
-        self.value = value
-
-        self.right = None
-        self.left = None
+from structures import Tree
 
 
-t1 = BinaryTree(1)
-t2 = BinaryTree(2)
+def get_content(path: str) -> str:
 
-t3 = BinaryTree(3)
-t3.left = t1
-t3.right = t2
+    with open(path, "r") as f:
+        content = f.read()
 
-t4 = BinaryTree(5)
-t4.right = t2
-t4.left = t3
+    return content
 
 
-def draw_tree(tree: BinaryTree, im: Image) -> Image:
-    """
-    draw = ImageDraw.Draw(image)
-    draw.ellipse((x-r, y-r, x+r, y+r), fill=(255,0,0,0))
-    """
-    draw = ImageDraw.Draw(im)
-    draw_rec(tree, draw, (im.width // 2, 20), (im.width // 2, 20))
+def get_tree(path: str) -> Tree:
+    
+    #-----------parse input----------------#
+    lines = get_content(path).split("\n")
+    relations = {}
 
-    return im
+    if lines[-1] == "":
+        lines.pop()
 
-def draw_rec(tree, im, prev, point):
+    for line in lines:
+        
+        line = line.replace(" ", "")
+        parent, children_str = line.split("->")
+        children = children_str.split(",")
+        relations[parent] = children
+    #---------------------------------------#
 
-    if not tree:
-        return
+    #----Get all members---------#
+    members = set(relations)
+    nodes = {}
 
-    x, y = point
-    circle(im, 10, point)
-    line(im, prev, point)
+    for children in relations.values():
+        members = members | set(children)
 
-    draw_rec(tree.left, im, (x,y), (x - 50, y + 50))
-    draw_rec(tree.right, im, (x,y), (x + 50, y + 50))
+    #----------------------------#
 
-def circle(im, r, m):
+    #-------Creating relations---------------#
+    for parent, children in relations.items():
 
-    x, y = m
-    im.ellipse((x-r, y-r, x+r, y+r), fill=(255,0,0,0))
+        if parent not in nodes:
 
+            nodes[parent] = Tree(parent)
 
-def line(im, from_, to):
+        p = nodes[parent]
 
-    x1, y1 = from_
-    x2, y2 = to
-    im.line((x1, y1, x2, y2), fill=128)
+        for child in children:
 
+            if child not in nodes:
+                nodes[child] = Tree(child)
 
-im = Image.new("RGB", (800, 800), (0, 0, 0))
+            c = nodes[child]
 
-draw_tree(t4, im)
+            p.children.append(c)
+            c.parent = p
 
-im.show()
+            members.remove(child)
+    #------------------------------------------#
+
+    # Not definite root (More members without parent)
+    if len(members) > 1:
+        return 1
+
+    return nodes[members.pop()]

@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
 
 class Tree:
@@ -7,6 +7,7 @@ class Tree:
 
         self.value = value
 
+        self.parent: Optional["Tree"] = None
         self.children: List["Tree"] = []
 
 
@@ -27,16 +28,16 @@ class Tree:
 
     def get_max_width(self) -> int:
 
-        maxWidth = 0
+        max_width = 0
         depth = self.get_depth()
 
         for i in range(1, depth + 1):
             width = self.get_width(i)
 
-            if width > maxWidth:
-                maxWidth = width
+            if width > max_width:
+                max_width = width
 
-        return maxWidth
+        return max_width
 
 
     def get_width(self, level: int) -> int:
