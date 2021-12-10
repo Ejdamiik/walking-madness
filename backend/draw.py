@@ -1,6 +1,6 @@
 from typing import Any, Tuple, List
 from PIL import Image, ImageDraw, ImageFont
-from structures import Tree
+from backend.structures import Tree
 
 
 Point = Tuple[int, int]

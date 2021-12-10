@@ -1,0 +1,66 @@
+html{
+    display: flex;
+    flex-flow: row nowrap;  
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    height:100%;
+    margin: 0;
+    padding: 0;
+    background:#eeeeee;
+}
+
+h1{
+    font-size: 40px;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+main {
+    display: flex;
+    flex-direction: row;
+}
+
+aside {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    margin-right: 20%;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: auto;  
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+}
+
+header {
+    position: absolute;
+    top: 0;
+}
+
+textarea {
+    height: 500px;
+    width: 300px;
+}
+#image-output {
+    width: 600px;
+    height: 500px;
+    border: solid;
+}
+
+#submit-button {
+    width: 50%;
+    margin-top: 20px;
+    object-fit: contain;
+}

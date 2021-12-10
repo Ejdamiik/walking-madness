@@ -1,18 +1,20 @@
-from structures import Tree
+from backend.structures import Tree
 
 
 def get_content(path: str) -> str:
-
+    """
+    Function for reading from file
+    """
     with open(path, "r") as f:
         content = f.read()
 
     return content
 
 
-def get_tree(path: str) -> Tree:
+def get_tree(inpt: str) -> Tree:
     
     #-----------parse input----------------#
-    lines = get_content(path).split("\n")
+    lines = inpt.split("\n")
     relations = {}
 
     if lines[-1] == "":

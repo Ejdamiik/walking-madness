@@ -12,13 +12,21 @@
 		<h1>Structure Visualisation</h1>
 	</header>
 
-	<form>
-		<textarea>Input</textarea>
-		<button>Submit</button>
-	</form>
+	<main>
+		<aside>
+			<form id = "input-form" method = "POST" action = "/get_output">
+				<textarea>Input</textarea>
+				<button id = "submit-button">Submit</button>
+			</form>
 
-	<img id="image-output" />
-	<p id = "text-output">Bla-Bla</p>
+			<p id = "text-output">Bla-Bla</p>
+		</aside>
+
+		<section>
+			<img id="image-output"/>
+		</section>
+
+	</main>
 
 	<footer>
 		<p>Footer</p>
