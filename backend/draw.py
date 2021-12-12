@@ -1,4 +1,4 @@
-from typing import Any, Tuple, List
+from typing import Any, Tuple, List, Optional
 from PIL import Image, ImageDraw, ImageFont
 from backend.structures import Tree
 
@@ -31,21 +31,26 @@ class DrawTree:
         #----------Tree properties------------#
         self.tree = tree
         depth = self.tree.get_depth()
-        tree_width = self.tree.get_max_width()
+        self.tree_width = self.tree.get_width()
         #------------------------------------#
 
         #------------Scale--------------------------------------------------------------------#
-        font_size = min(width, height) // (max(depth, tree_width) * 2 * DEFINING_CONST)
+        font_size = min(width, height) // (max(depth, self.tree_width) * 2 * DEFINING_CONST)
         self.font = ImageFont.truetype("arial.ttf", font_size)
-        self.node_radius = min(width, height) // (max(depth, tree_width) * DEFINING_CONST)
-        self.y_step = height // depth
-        self.smallest_x = width // (tree_width * 4)
+        self.node_radius = min(width, height) // (max(depth, self.tree_width) * DEFINING_CONST)
+
+        if depth != 1:
+            self.y_step = height // (depth - 1)
+        else:
+            self.y_step = height
+
+        self.y_step -= 2 * self.node_radius + 50
         #-------------------------------------------------------------------------------------#
 
         self.lines: List[Tuple[Point, Point]] = []
         self.nodes: List[Point] = []
 
-    def get_text(self) -> None:
+    def get_text(self) -> str:
         """
         Method to get text-representation of tree
         """
@@ -53,10 +58,7 @@ class DrawTree:
         out = []
         self.draw_levels(self.tree, 0, "", "", out)
 
-        with open("out.txt", "w", encoding = "utf-8") as f:
-
-            for line in out:
-                f.write(line + "\n")
+        return "<br/>".join(out)
 
     def draw_levels(self,
                     tree: Tree,
@@ -113,9 +115,10 @@ class DrawTree:
 
     def get_image(self) -> Image:
 
-        self.draw_rec(self.tree,
+        self.draw_rec(self.tree, self.tree, 1,
                       (self.im.width // 2, self.node_radius + 5),
-                      (self.im.width // 2, self.node_radius + 5)
+                      (self.im.width // 2, self.node_radius + 5),
+                      self.im.width // 4
                      )
 
         #---------Actual drawing--------#
@@ -129,26 +132,64 @@ class DrawTree:
 
         return self.im
 
+    def overlap(self, point: Point) -> Optional[Point]:
+        """
+        If points overlap -- it moves new point
+        """
+
+        for points in self.lines:
+
+            a, b = points
+            if point == b:
+
+                if a[0] < b[0]:
+                    x, y = point
+                    return x - self.im.width // 5, y
+                else:
+                    x, y = point
+                    return x + self.im.width // 5, y
+
     def draw_rec(self,
                 tree: Tree,
+                root: Tree,
+                level: int,
                 prev: Point,
-                curr: Point) -> None:
+                curr: Point,
+                prev_xs: int) -> None:
 
         if not tree:
             return
 
+        overlap_ = self.overlap(curr)
+        if overlap_:
+            curr = overlap_
+
         x, y = curr
+
         self.lines.append((prev, curr))
         self.nodes.append((curr, tree.value))
 
-        line = len(tree.children) - 1
+        next_width = root.gw_b_l(level + 1)
+        width = root.gw_b_l(level)
 
-        x_step = len(tree.children) * self.smallest_x
-        leftmost = x - line * x_step // 2
+        if width > next_width:
+            next_width = width
+
+        if next_width == 0:
+            return
+        elif next_width == 1:
+            x_step = x
+        else:
+            x_step = (self.im.width // (next_width - 1)) // 2
+
+        if next_width != 1:
+            leftmost = x - (next_width // 2) * (x_step)
+        else:
+            leftmost = x
 
         for i, child in enumerate(tree.children):
 
-            self.draw_rec(child, (x,y), (leftmost + i * x_step, y + self.y_step))
+            self.draw_rec(child, root, level + 1, (x,y), (leftmost + i * x_step, y + self.y_step),  x_step)
 
     #------------------Shape procedures-----------------------------#
     def circle(self, m: Point) -> None:

@@ -19,6 +19,7 @@ def serve_pil_image(img):
 
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 app.static_folder = r'frontend\static'
 
 
@@ -40,18 +41,26 @@ def index(path: str) -> str:
 #---------------------Page-getters-------------------------------------------#
 
 #--------------------App-functionality---------------------------------------#
-@app.route('/get_output', methods=['post'])
-def get_output():
+@app.route('/get-im', methods=['post'])
+def get_im():
 
     inpt = request.form.get('user-input')
     width = int(request.form.get('im-width'))
 
     tree = ih.get_tree(inpt)
     draw_obj = draw.DrawTree(width, width, tree)
-    im = draw_obj.get_image()
+    pil_im = draw_obj.get_image()
 
-    return serve_pil_image(im)
+    return serve_pil_image(pil_im)
 
 
+@app.route('/get-txt', methods=['post'])
+def get_txt():
+
+    inpt = request.form.get('user-input')
+    tree = ih.get_tree(inpt)
+    draw_obj = draw.DrawTree(800, 800, tree)
+    txt = draw_obj.get_text()
+    return txt
 
 app.run()

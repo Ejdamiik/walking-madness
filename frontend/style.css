@@ -14,6 +14,10 @@ h1{
     font-size: 40px;
 }
 
+p {
+    white-space: pre-wrap;
+}
+
 body {
     display: flex;
     flex-direction: column;
@@ -63,4 +67,8 @@ textarea {
     width: 50%;
     margin-top: 20px;
     object-fit: contain;
+}
+
+#txt-button {
+    visibility: hidden;
 }

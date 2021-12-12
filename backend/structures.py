@@ -26,21 +26,21 @@ class Tree:
         return depth
 
 
-    def get_max_width(self) -> int:
+    def get_width(self) -> int:
 
-        max_width = 0
         depth = self.get_depth()
 
-        for i in range(1, depth + 1):
-            width = self.get_width(i)
+        res = 0
+        for level in range(1, depth + 1):
 
-            if width > max_width:
-                max_width = width
+            width = self.gw_b_l(level)
+            if width > res:
+                res = width
 
-        return max_width
+        return res
 
 
-    def get_width(self, level: int) -> int:
+    def gw_b_l(self, level: int) -> int:
 
         if level == 1:
             return 1
@@ -49,6 +49,6 @@ class Tree:
 
             width = 0
             for child in self.children:
-                width += child.get_width(level - 1)
+                width += child.gw_b_l(level - 1)
 
         return width
