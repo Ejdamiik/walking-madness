@@ -14,8 +14,15 @@ h1{
     font-size: 40px;
 }
 
+nav {
+    margin: 10%;
+}
 p {
     white-space: pre-wrap;
+}
+
+legend {
+    text-align: center;
 }
 
 body {

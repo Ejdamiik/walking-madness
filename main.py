@@ -1,7 +1,9 @@
 from flask import Flask, request, send_from_directory, render_template, send_file
 from io import BytesIO
-import backend.input_handle as ih
-import backend.draw as draw
+import backend.tree.input_handle as ih
+import backend.tree.draw as tdraw
+import backend.graph.graph as graph
+import backend.graph.draw as gdraw
 
 
 def serve_pil_image(img):
@@ -46,11 +48,18 @@ def get_im():
 
     inpt = request.form.get('user-input')
     width = int(request.form.get('im-width'))
+    to_draw = request.form.get("to-draw")
 
-    tree = ih.get_tree(inpt)
-    draw_obj = draw.DrawTree(width, width, tree)
+    if to_draw == "graph":
+      grph = graph.get_graph(inpt)
+      draw_obj = gdraw.DrawGraph(grph, width, width)
+
+
+    elif to_draw == "tree": 
+        tree = ih.get_tree(inpt)
+        draw_obj = tdraw.DrawTree(width, width, tree)
+
     pil_im = draw_obj.get_image()
-
     return serve_pil_image(pil_im)
 
 
@@ -58,9 +67,15 @@ def get_im():
 def get_txt():
 
     inpt = request.form.get('user-input')
+    to_draw = request.form.get("to-draw")
+
+    if to_draw == "graph":
+        return inpt
+
     tree = ih.get_tree(inpt)
-    draw_obj = draw.DrawTree(800, 800, tree)
+    draw_obj = tdraw.DrawTree(800, 800, tree)
     txt = draw_obj.get_text()
+
     return txt
 
 app.run()

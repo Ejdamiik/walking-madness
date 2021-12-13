@@ -5,11 +5,12 @@ function getIm(e) {
 
     const user_input = this.querySelector("textarea").value;
     const im_width = document.querySelector("img").offsetWidth;
-
+    const to_draw = document.querySelector('input[name="to-draw"]:checked').value;
 
     let formular = new URLSearchParams();
     formular.append('user-input', user_input);
     formular.append('im-width', im_width);
+    formular.append('to-draw', to_draw);
 
     let url = this.action;
     let method = this.method;
@@ -28,9 +29,11 @@ function getTxt(e) {
     e.preventDefault();
 
     const user_input = document.querySelector("textarea").value;
+    const to_draw = document.querySelector('input[name="to-draw"]:checked').value;
 
     let formular = new URLSearchParams();
     formular.append('user-input', user_input);
+    formular.append('to-draw', to_draw);
 
     let url = this.action;
     let method = this.method;

@@ -1,4 +1,4 @@
-from backend.structures import Tree
+from backend.tree.tree import Tree
 
 
 def get_content(path: str) -> str:
