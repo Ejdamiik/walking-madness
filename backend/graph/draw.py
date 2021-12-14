@@ -23,11 +23,13 @@ class DrawGraph:
         self.graph = graph
         self.nodes = self.get_nodes()
 
-        # --- Scaling ---
-        self.node_distance = 1000 // len(self.nodes)
-        self.node_radius = max(width, height) // (3 * len(self.nodes))
-        self.dx = None
-        self.dy = Non
+        self.node_distance =  width // 3
+
+        self.node_radius = 10
+
+        self.dx = width // 5
+        self.dy = None
+
         font_size = max(width, height) // 20
         self.font = ImageFont.truetype("arial.ttf", font_size)
         # ---
@@ -41,11 +43,14 @@ class DrawGraph:
         tortoise = Tortoise()
         coords = []
 
+        tortoise.setpos(300, 300)
+
         angle = 360 // n
         for i in range(n):
             
-            coords.append(((3 * width) // 8 + tortoise.xcor(), (width // 5) + tortoise.ycor()))
             tortoise.forward(self.node_distance)
+            coords.append((tortoise.xcor(), tortoise.ycor()))
+            tortoise.backward(self.node_distance)
             tortoise.left(angle)
 
         nodes_coords = dict(zip(self.nodes, coords))
@@ -72,7 +77,7 @@ class DrawGraph:
 
         for node, pos in self.nodes_coords.items():
             self.circle(pos)
-            self.text(pos, node)
+            # self.text(pos, node)
 
         return self.im
 
