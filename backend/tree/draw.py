@@ -35,9 +35,9 @@ class DrawTree:
         #------------------------------------#
 
         #------------Scale--------------------------------------------------------------------#
-        font_size = min(width, height) // (max(depth, self.tree_width) * 2 * DEFINING_CONST)
-        self.font = ImageFont.truetype("arial.ttf", font_size)
         self.node_radius = min(width, height) // (max(depth, self.tree_width) * DEFINING_CONST)
+        font_size = self.node_radius
+        self.font = ImageFont.truetype("arial.ttf", font_size)
 
         if depth != 1:
             self.y_step = height // (depth - 1)
@@ -171,6 +171,7 @@ class DrawTree:
 
         next_width = root.gw_b_l(level + 1)
         width = root.gw_b_l(level)
+        nw = next_width
 
         if width > next_width:
             next_width = width
@@ -182,10 +183,14 @@ class DrawTree:
         else:
             x_step = (self.im.width // (next_width - 1)) // 2
 
-        if next_width != 1:
-            leftmost = x - (next_width // 2) * (x_step)
-        else:
+        next_width = nw
+        if next_width == 1:
             leftmost = x
+        elif next_width % 2 == 0:
+            leftmost = x - ((next_width // 4) * (x_step) + (x_step // 2))
+        else:
+            leftmost = leftmost = x - (next_width // 2) * (x_step)
+            
 
         for i, child in enumerate(tree.children):
 

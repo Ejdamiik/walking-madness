@@ -54,7 +54,6 @@ def get_im():
       grph = graph.get_graph(inpt)
       draw_obj = gdraw.DrawGraph(grph, width, width)
 
-
     elif to_draw == "tree": 
         tree = ih.get_tree(inpt)
         draw_obj = tdraw.DrawTree(width, width, tree)

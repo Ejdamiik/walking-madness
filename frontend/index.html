@@ -9,38 +9,44 @@
 <body>
 
 	<header>
-		<h1>Structure Visualisation</h1>
+		<h1>Graph Visualisation</h1>
+		<hr color = "black">
 	</header>
 
 	<nav>
 		<legend>Pick one to draw:</legend>
-			<input name = "to-draw" type="radio" id="html" value="graph">
-			<label>Graph</label>
-			<input name = "to-draw" type="radio" id="css" value="tree">
-			<label>Tree</label>
+		<section class = "options">
+			<input name = "to-draw" type="radio" id="graph" value="graph">
+			<label for = "graph">Graph</label>
+			<input name = "to-draw" type="radio" id="tree" value="tree">
+			<label for = "tree">Tree</label>
+		</section>
 	</nav>
 	<main>
 		<aside>
+
 			<form id = "input-form" method = "POST" action = "/get-im">
-				<textarea>Input</textarea>
+				<textarea>A -> B</textarea>
 				<button id = "submit-button">Submit</button>
 			</form>
 
 			<form id = "txt-form" method = "POST" action = "/get-txt">
-				<button id = "txt-button"></button>
+				<button class = "hidden" id = "txt-button"></button>
 			</form>
 
-			<p id = "text-output">Text-Output:</p>
 		</aside>
 
-		<section>
+		<section id = "image-holder">
 			<img id="image-output"/>
+			<p id = "exception-msg"></p>
 		</section>
+
+		<p id = "text-output">Text-Output:</p>
 
 	</main>
 
 	<footer>
-		<p>Footer</p>
+		<a href = "https://github.com/Ejdamiik" target = "_blank"><img src = "github.png" alt = "Github logo"></a>
 	</footer>
 
 <script type="text/javascript" src="script.js" ></script>

@@ -7,22 +7,20 @@ html{
     height:100%;
     margin: 0;
     padding: 0;
-    background:#eeeeee;
+    background:#5D6D7E;
 }
 
 h1{
-    font-size: 40px;
+    font-size: 50px;
 }
 
-nav {
-    margin: 10%;
-}
 p {
     white-space: pre-wrap;
 }
 
 legend {
     text-align: center;
+    font-size: 30px;
 }
 
 body {
@@ -34,13 +32,14 @@ body {
 main {
     display: flex;
     flex-direction: row;
+    justify-content: space-around;
 }
 
 aside {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     margin: auto;
-    margin-right: 20%;
+    margin-right: 10%;
 }
 
 form {
@@ -63,11 +62,14 @@ header {
 textarea {
     height: 500px;
     width: 300px;
+    background-color: #000;
+    color: #fff;
 }
+
 #image-output {
-    width: 600px;
+    width: 500px;
     height: 500px;
-    border: solid;
+    background-color: #000; 
 }
 
 #submit-button {
@@ -76,6 +78,65 @@ textarea {
     object-fit: contain;
 }
 
-#txt-button {
+.hidden {
     visibility: hidden;
+}
+
+#text-output {
+    width: 400px;
+    margin-left: 2%;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+nav {
+    margin: 3%;
+}
+
+.options {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+input[type=radio] {
+    display: none;
+}
+
+label {
+    display: flex;
+    cursor: pointer;
+    color: #000000;
+    transition: all 0.2s ease;
+    font-size: 20px;
+}
+
+#graph:checked ~ label[for=graph] {
+    color: #A3E4D7;
+}
+
+#tree:checked ~ label[for=tree] {
+    color: #A3E4D7;
+}
+
+button {
+    border: none;
+    background: none;
+    background-color: #283747;
+    transition: transform .2s;
+    font-size: 30px;
+    border-radius: 10px; 
+}
+
+button:active {
+    transform: translateY(4px);
+}
+
+button:hover {
+    transform: translateY(4px);
 }
