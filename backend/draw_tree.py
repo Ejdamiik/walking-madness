@@ -1,30 +1,20 @@
 from typing import Any, Tuple, List, Optional
 from PIL import Image, ImageDraw, ImageFont
-from backend.tree.tree import Tree
+from backend.draw import Draw
+from backend.tree import Tree
 
 
 Point = Tuple[int, int]
-
-
-#-----Colors-----#
-NODE_COLOR = (0, 0, 0)
-NODE_OUTLINE = (255, 255, 255)
-LINE_COLOR = (255, 255, 255)
-TEXT_COLOR = (255, 255, 255)
-
-#-----Others-----#
-LINE_WIDTH = 2
 DEFINING_CONST = 6
 
-
-class DrawTree:
+class DrawTree(Draw):
 
     def __init__(self,
                 width: int,
                 height: int,
                 tree: Tree) -> None:
         
-        self.im = Image.new("RGB", (width, height), (0, 0, 0))
+        self.im = Image.new("RGB", (width, height), self.get_bg())
         # Drawing context for image
         self.draw = ImageDraw.Draw(self.im)
 
@@ -195,21 +185,3 @@ class DrawTree:
         for i, child in enumerate(tree.children):
 
             self.draw_rec(child, root, level + 1, (x,y), (leftmost + i * x_step, y + self.y_step),  x_step)
-
-    #------------------Shape procedures-----------------------------#
-    def circle(self, m: Point) -> None:
-        x, y = m
-        self.draw.ellipse((x - self.node_radius, y - self.node_radius, x + self.node_radius, y + self.node_radius),
-                          fill=NODE_COLOR, outline = NODE_OUTLINE)
-
-    def line(self, from_: Point, to: Point) -> None:
-        x1, y1 = from_
-        x2, y2 = to
-        self.draw.line((x1, y1, x2, y2), fill = LINE_COLOR, width = LINE_WIDTH)
-
-    def text(self, where: Point, val: Any) -> None:
-
-        x, y = where
-        w, h = self.draw.textsize(val)
-        self.draw.text((x - w, y - h), val, TEXT_COLOR, font = self.font)
-    #--------------------------------------------------------------#

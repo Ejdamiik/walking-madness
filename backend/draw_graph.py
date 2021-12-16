@@ -1,22 +1,21 @@
-from backend.graph.tortoise import Tortoise
+from backend.tortoise import Tortoise
+from backend.draw import Draw
 from PIL import Image, ImageDraw, ImageFont
-from typing import Tuple
+from typing import Tuple, Dict, List
+from backend.input_handle import get_config
+
 
 Point = Tuple[int, int]
 
-LINE_COLOR = (0, 0, 0)
-LINE_WIDTH = 5
-NODE_COLOR = (255, 255, 255)
-NODE_OUTLINE = (0, 0, 0)
-TEXT_COLOR = (0, 0, 0)
-BG_COLOR = (255, 255, 255)
 
+class DrawGraph(Draw):
 
-class DrawGraph:
-
-    def __init__(self, graph, width, height):
+    def __init__(self,
+                 graph: Dict[str, List[str]],
+                 width: int,
+                 height: int) -> None:
         
-        self.im = Image.new("RGB", (width, height), BG_COLOR)
+        self.im = Image.new("RGB", (width, height), self.get_bg())
         # Drawing context for image
         self.draw = ImageDraw.Draw(self.im)
 
@@ -33,7 +32,7 @@ class DrawGraph:
         self.nodes_coords = self.get_node_coords(width, height)
         self.lines = set()
 
-    def get_node_coords(self, width, height):
+    def get_node_coords(self, width: int, height: int) -> Dict[str, int]:
 
         n = len(self.nodes)
         tortoise = Tortoise()
@@ -52,7 +51,7 @@ class DrawGraph:
         nodes_coords = dict(zip(self.nodes, coords))
         return nodes_coords
 
-    def get_nodes(self):
+    def get_nodes(self) -> List[str]:
 
         members = set()
 
@@ -63,7 +62,7 @@ class DrawGraph:
 
         return list(members)
 
-    def get_image(self):
+    def get_image(self) -> Image:
 
         lines = self.get_lines()
 
@@ -77,7 +76,7 @@ class DrawGraph:
 
         return self.im
 
-    def get_lines(self):
+    def get_lines(self) -> List[Tuple[int, int]]:
 
         lines = set()
         for from_, to in self.graph.items():
@@ -86,22 +85,3 @@ class DrawGraph:
                 lines.add((self.nodes_coords[from_], self.nodes_coords[node]))
 
         return lines
-
-    #------------------Shape procedures-----------------------------#
-    def circle(self, m: Point) -> None:
-        x, y = m
-        self.draw.ellipse((x - self.node_radius, y - self.node_radius, x + self.node_radius, y + self.node_radius),
-                          fill=NODE_COLOR, outline = NODE_OUTLINE)
-
-    def line(self, from_: Point, to: Point) -> None:
-        x1, y1 = from_
-        x2, y2 = to
-        self.draw.line((x1, y1, x2, y2), fill = LINE_COLOR, width = LINE_WIDTH)
-
-    def text(self, where: Point, val) -> None:
-
-        x, y = where
-        w, h = self.draw.textsize(val)
-        self.draw.text((x - self.node_radius // 2 + w, y - self.node_radius // 2), val, TEXT_COLOR,
-                        anchor="ms",  font = self.font)
-    #--------------------------------------------------------------#

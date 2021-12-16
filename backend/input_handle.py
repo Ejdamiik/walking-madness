@@ -1,4 +1,6 @@
-from backend.tree.tree import Tree
+from backend.tree import Tree
+from typing import Dict, List
+import json
 
 
 def get_content(path: str) -> str:
@@ -64,3 +66,10 @@ def get_tree(inpt: str) -> Tree:
         return 1
 
     return nodes[members.pop()]
+
+
+def get_config(path: str) -> Dict[str, List[int]]:
+
+    with open(path, "r") as f:
+
+        return json.load(f)

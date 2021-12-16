@@ -1,22 +1,22 @@
 from flask import Flask, request, send_from_directory, render_template, send_file
 from io import BytesIO
-import backend.tree.input_handle as ih
-import backend.tree.draw as tdraw
-import backend.graph.graph as graph
-import backend.graph.draw as gdraw
+import backend.input_handle as ih
+import backend.draw_tree as tdraw
+import backend.graph as graph
+import backend.draw_graph as gdraw
 
 
 def serve_pil_image(img):
-  """
-  Allows to save PIL image object to a
-  virtual file in memory and then return
-  it as a HTTP response
-  """
+    """
+    Allows to save PIL image object to a
+    virtual file in memory and then return
+    it as a HTTP response
+    """
 
-  img_io = BytesIO()
-  img.save(img_io, 'PNG', quality=70)
-  img_io.seek(0)
-  return send_file(img_io, mimetype='image/png')
+    img_io = BytesIO()
+    img.save(img_io, 'PNG', quality=70)
+    img_io.seek(0)
+    return send_file(img_io, mimetype='image/png')
 
 
 app = Flask(__name__)
@@ -63,7 +63,7 @@ def get_im():
 
 
 @app.route('/get-txt', methods=['post'])
-def get_txt():
+def get_txt() -> str:
 
     inpt = request.form.get('user-input')
     to_draw = request.form.get("to-draw")
