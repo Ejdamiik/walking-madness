@@ -1,80 +1,102 @@
-from flask import Flask, request, send_from_directory, render_template, send_file
-from io import BytesIO
-import backend.input_handle as ih
-import backend.draw_tree as tdraw
-import backend.graph as graph
-import backend.draw_graph as gdraw
+import pygame
+import random
+import time
+from player import Player
+from environment import Game
 
+# --- constants ---
 
-def serve_pil_image(img):
-    """
-    Allows to save PIL image object to a
-    virtual file in memory and then return
-    it as a HTTP response
-    """
+WHITE = (255, 255, 255)
+BLACK = (0  ,   0,   0)
 
-    img_io = BytesIO()
-    img.save(img_io, 'PNG', quality=70)
-    img_io.seek(0)
-    return send_file(img_io, mimetype='image/png')
+DISPLAY_WIDTH = 800
+DISPLAY_HEIGHT = 600
 
+FPS = 30
 
-app = Flask(__name__)
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
-app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
-app.static_folder = r'frontend\static'
+BLOCK_WIDTH = 80
+BLOCK_HEIGHT = 80
 
+SPEED = 10
 
-#---------------------Page-getters-------------------------------------------#
+# --- functions ---
 
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def index(path: str) -> str:
-    """
-    HTTP response for other actions
-    """
+def run():
 
-    if (len(path) == 0):
+    mainloop = True
+    dx, dy = 0, 0
 
-        return send_from_directory('frontend', 'index.html')
+    while mainloop:
 
-    return send_from_directory('frontend', path)
+        # --- events ---
 
-#---------------------Page-getters-------------------------------------------#
+        for event in pygame.event.get():
 
-#--------------------App-functionality---------------------------------------#
-@app.route('/get-im', methods=['post'])
-def get_im():
+            if event.type == pygame.QUIT: 
+                mainloop = False
 
-    inpt = request.form.get('user-input')
-    width = int(request.form.get('im-width'))
-    to_draw = request.form.get("to-draw")
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    mainloop = False
 
-    if to_draw == "graph":
-      grph = graph.get_graph(inpt)
-      draw_obj = gdraw.DrawGraph(grph, width, width)
+                # - start moving -
+                elif event.key == pygame.K_UP:
+                    dy = -SPEED
+                    player.rotate("up")
 
-    elif to_draw == "tree": 
-        tree = ih.get_tree(inpt)
-        draw_obj = tdraw.DrawTree(width, width, tree)
+                elif event.key == pygame.K_DOWN:
+                    dy = SPEED
+                    player.rotate("down")
 
-    pil_im = draw_obj.get_image()
-    return serve_pil_image(pil_im)
+                elif event.key == pygame.K_LEFT:
+                    dx = -SPEED
+                    player.rotate("left")
 
+                elif event.key == pygame.K_RIGHT:
+                    dx = SPEED
+                    player.rotate("right")
 
-@app.route('/get-txt', methods=['post'])
-def get_txt() -> str:
+                # Ability
+                elif event.key == pygame.K_SPACE:
+                    game.player_attack()
 
-    inpt = request.form.get('user-input')
-    to_draw = request.form.get("to-draw")
+            elif event.type == pygame.KEYUP:
+                # - stop moving -
+                if event.key == pygame.K_UP:
+                    dy = 0
+                elif event.key == pygame.K_DOWN:
+                    dy = 0
+                elif event.key == pygame.K_LEFT:
+                    dx = 0
+                elif event.key == pygame.K_RIGHT:
+                    dx = 0          
 
-    if to_draw == "graph":
-        return inpt
+        # --- updates ---
 
-    tree = ih.get_tree(inpt)
-    draw_obj = tdraw.DrawTree(800, 800, tree)
-    txt = draw_obj.get_text()
+        game.player_move(dx, dy)
 
-    return txt
+        # --- draws ---
 
-app.run()
+        game.screen.blit(game.bg_surface, game.bg_rect)
+        game.screen.blit(player.surface, player.block)
+
+        for sur, rect in game.to_blit:
+            game.screen.blit(sur, rect)
+
+        pygame.display.flip()
+
+        clock.tick(FPS)
+
+# --- main ---
+
+player = Player(BLOCK_WIDTH, BLOCK_HEIGHT, (0, 0, 0))
+player.init_attrs(DISPLAY_WIDTH, DISPLAY_HEIGHT)
+
+game = Game(DISPLAY_WIDTH, DISPLAY_HEIGHT, player)
+game.load_texture("textures//floor.png")
+
+clock = pygame.time.Clock()
+
+run()
+
+pygame.quit()
