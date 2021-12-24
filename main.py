@@ -42,18 +42,22 @@ def run():
                 # - start moving -
                 elif event.key == pygame.K_UP:
                     dy = -SPEED
+                    dx = 0
                     player.rotate("up")
 
                 elif event.key == pygame.K_DOWN:
                     dy = SPEED
+                    dx = 0
                     player.rotate("down")
 
                 elif event.key == pygame.K_LEFT:
                     dx = -SPEED
+                    dy = 0
                     player.rotate("left")
 
                 elif event.key == pygame.K_RIGHT:
                     dx = SPEED
+                    dy = 0
                     player.rotate("right")
 
                 # Ability
